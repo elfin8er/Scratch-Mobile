@@ -42,6 +42,7 @@ import flash.net.LocalConnection;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import flash.net.navigateToURL;
 import flash.system.*;
 import flash.text.*;
 import flash.utils.*;
@@ -72,9 +73,10 @@ import util.*;
 
 import watchers.ListWatcher;
 
+
 public class Scratch extends Sprite {
 	// Version
-	public static const versionString:String = 'v443';
+	public static const versionString:String = 'v442';
 	public static var app:Scratch; // static reference to the app, used for debugging
 
 	// Display modes
@@ -134,6 +136,8 @@ public class Scratch extends Sprite {
 	public const tipsBarClosedWidth:int = 17;
 
 	public var logger:Log = new Log(16);
+
+	private var scratchForumURL:String = "https://scratch.mit.edu/discuss/topic/60012/";
 
 	public function Scratch() {
 		SVGTool.setStage(stage);
@@ -1108,6 +1112,17 @@ public class Scratch extends Sprite {
 	protected function addEditMenuItems(b:*, m:Menu):void {
 		m.addLine();
 		m.addItem('Edit block colors', editBlockColors);
+	}
+
+	public function showHelpMenu(b:*):void {
+		var m:Menu = new Menu(null, 'Help', CSS.topBarColor(), 28);
+		m.addItem('Scratch Forum', openScratchForum());
+		m.showOnStage(stage, b.x, topBarPart.bottom() -1);
+	}
+
+	private function openScratchForum():void {
+		var urlReq:URLRequest = new URLRequest(scratchForumURL); 
+		navigateToURL(urlReq);
 	}
 
 	protected function editBlockColors():void {

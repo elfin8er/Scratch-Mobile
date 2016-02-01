@@ -1,20 +1,37 @@
-## Scratch 2.0 editor and player [![Build Status](https://api.travis-ci.org/LLK/scratch-flash.svg?branch=master)](https://travis-ci.org/LLK/scratch-flash)
-This is the open source version of Scratch 2.0 and the core code for the official version found on http://scratch.mit.edu. This code has been released under the GPL version 2 license. Forks can be released under the GPL v2 or any later version of the GPL.
+## Scratch 2.0 Compiled For Mobile
+This code has been released under the GPL version 2 license. Forks can be released under the GPL v2 or any later version of the GPL.
 
-If you're interested in contributing to Scratch, please take a look at the issues on this repository. Two great ways of helping Scratch are by identifying bugs and documenting them as issues, or fixing issues and creating pull requests. When submitting pull requests please be patient -- the Scratch Team is very busy and it can take a while to find time to review them. The organization and class structures can't be radically changed without significant coordination and collaboration from the Scratch Team, so these types of changes should be avoided.
+Based off of [Scratch 2.0 by MIT](http://scratch.mit.edu): http://scratch.mit.edu
 
-It's been said that the Scratch Team spends about one hour of design discussion for every pixel in Scratch, but some think that estimate is a little low. While we welcome suggestions for new features in our <a href="http://scratch.mit.edu/discuss/1/">suggestions forum</a> (especially ones that come with mockups), we are unlikely to accept PRs with new features that we haven't deeply thought through. Why? Because we have a strong belief in the value of keeping things simple for new users. To learn more about our design philosophy, see this <a href="http://scratch.mit.edu/discuss/post/1576/">forum post<a>, or <a href="http://web.media.mit.edu/~jmaloney/papers/ScratchLangAndEnvironment.pdf">this paper</a>.
+[Scratch Forums Topic](https://scratch.mit.edu/discuss/topic/60012)
 
 ### Building
-To build the Scratch 2.0 SWF you will need [Ant](http://ant.apache.org/), the [Flex SDK](http://flex.apache.org/) version 4.10+, and [playerglobal.swc files](http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#playerglobal) for Flash Player versions 10.2 and 11.4 added to the Flex SDK. Scratch is used in a multitude of settings and some users have older versions of Flash which we try to support (as far back as 10.2).
+To build Scratch 2.0 for mobile you will need [Ant](http://ant.apache.org/), the [Flex SDK](http://flex.apache.org/) version 4.10+, and [playerglobal.swc files](http://helpx.adobe.com/flash-player/kb/archived-flash-player-versions.html#playerglobal) for Flash Player versions 10.2 and 11.4 added to the Flex SDK.
 
 After downloading ``playerglobal11_4.swc`` and ``playerglobal10_2.swc``, move them to ``<path to flex>/frameworks/libs/player/<version>/playerglobal.swc``. E.g., ``playerglobal11_4.swc`` should be located at ``<path to flex>/frameworks/libs/player/11.4/playerglobal.swc``.
 
-The ``build.properties`` file sets the default location for the Flex SDK. Create a ``local.properties`` file to set the location on your filesystem. Your ``local.properties`` file may look something like this:
+Create a ``local.properties`` file to set the required options. Your ``local.properties`` file may look something like this: 
 ```
-FLEX_HOME=/home/joe/downloads/flex_sdk_4.11
+FLEX_HOME=/Users/elfin8er/Downloads/flexsdk
+JAVA_HOME=/Program Files/Java/jdk1.7.0_79
+SCRATCH_HOME=/Users/elfin8er/Documents/Programming/ScratchMobile/scratch-flash
+android.certificate.password=PASSWORD
+ios.certificate.password=1234
+
+bin.ext=.bat
+certificates.path=${SCRATCH_HOME}/certificates
+ios.provision.path=${certificates.path}/Scratch_iOS.mobileprovision
+ios.certificate.path=${certificates.path}/Scratch_iOS.p12
+android.certificate.path=${certificates.path}/Scratch_android.p12
 ```
-Now you can run Ant ('ant' from the commandline) to build the SWF.
+
+I have included iOS and Android certificates, but if you'd like to use your own, you can define their locations above. You can create an Android certificate with the following command:
+
+```
+keytool -genkey -v -keystore myname.key.p12 -alias alias_name -keyalg RSA -storetype pkcs12 -keysize 2048 -validity 10000
+```
+
+Now you can run Ant ('ant' from the commandline) to build a 11.6 SWF, 10.2 SWF, APK, and iPA.
 
 If the source is building but the resulting .swf is producing runtime errors, your first course of action should be to download version 4.11 of the Flex SDK and try targeting that. The Apache foundation maintains an [installer](http://flex.apache.org/installer.html) that lets you select a variety of versions.
 

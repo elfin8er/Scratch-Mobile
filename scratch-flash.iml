@@ -11,9 +11,6 @@
             <entry library-name="as3corelib" library-level="project">
               <dependency linkage="Merged" />
             </entry>
-            <entry library-name="grabcut" library-level="application">
-              <dependency linkage="Merged" />
-            </entry>
           </entries>
           <sdk name="flex_sdk_4.11" />
         </dependencies>
@@ -33,9 +30,6 @@
               <dependency linkage="Merged" />
             </entry>
             <entry library-name="as3corelib" library-level="project">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry library-name="grabcut" library-level="application">
               <dependency linkage="Merged" />
             </entry>
           </entries>
@@ -67,6 +61,5 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="blooddy_crypto" level="project" />
     <orderEntry type="library" exported="" name="as3corelib" level="project" />
-    <orderEntry type="library" exported="" name="grabcut" level="application" />
   </component>
 </module>

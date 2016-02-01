@@ -18,22 +18,16 @@
  */
 
 package svgeditor {
-import assets.Resources;
-
-import flash.display.*;
-import flash.events.*;
-import flash.filters.GlowFilter;
-import flash.geom.*;
-import flash.text.TextField;
-import flash.text.TextFormat;
-
-import svgeditor.tools.BitmapBackgroundTool;
-
-import translation.Translator;
-
-import ui.parts.UIPart;
-
-import uiwidgets.*;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.filters.GlowFilter;
+	import flash.geom.*;
+	import flash.text.TextField;
+	import assets.Resources;
+	import translation.Translator;
+	import ui.parts.UIPart;
+	import uiwidgets.*;
+	import flash.text.TextFormat;
 
 public class DrawPropertyUI extends Sprite {
 
@@ -72,10 +66,6 @@ public class DrawPropertyUI extends Sprite {
 	// Smoothness UI
 	private var smoothnessUI:Sprite;
 
-	//Segmentation UI
-	private var segmentationUI:Sprite;
-
-
 	// Color picker
 	private var colorPicker:ColorPicker;
 
@@ -105,42 +95,41 @@ public class DrawPropertyUI extends Sprite {
 		makeSmoothnessUI();
 		makeZoomButtons();
 		makeModeLabelAndButton();
-		makeSegmentationUI();
 		makeReadouts();
+
 		addEventListener(ONCHANGE, updateStrokeWidthDisplay);
 		updateStrokeWidthDisplay();
 	}
 
 	public static function strings():Array {
 		return [
-			'Smooth', 'Set Costume Center', 'Font:', 'Bitmap Mode', 'Vector Mode', 'Convert to bitmap',
-			'Convert to vector', 'Line width', 'Eraser width'
-		];
+			'Smooth', 'Set Costume Center', 'Font:',
+			'Bitmap Mode', 'Vector Mode',
+			'Convert to bitmap', 'Convert to vector',
+			'Line width', 'Eraser width'];
 	}
 
 	public var w:int, h:int;
-	public function setWidthHeight(w:int, h:int, sx:int = 0, sy:int = 0):void {
+	public function setWidthHeight(w:int, h:int):void {
 		this.w = w;
 		this.h = h;
 		var g:Graphics = bg.graphics;
 		g.clear();
 		g.lineStyle(1, CSS.borderColor);
 		g.beginFill(0xF6F6F6);
-		g.drawRect(sx, sy, w - 1, h);
-		fixLayout(w, h, sx, sy);
+		g.drawRect(0, 0, w - 1, h);
+		fixLayout(w, h);
 	}
 
-	private function fixLayout(w:int, h:int, sx:int = 0, sy:int = 0):void {
-		colorPicker.x = sx + 105 + Math.max(0, Math.floor((w - 390) / 2));
-		colorPicker.y = sy + 6;
+	private function fixLayout(w:int, h:int):void {
+		colorPicker.x = 105 + Math.max(0, Math.floor((w - 390) / 2));
+		colorPicker.y = 6;
+		zoomButtons.x = w - zoomButtons.width - 5;
+		zoomButtons.y = 5;
 
-
-		zoomButtons.x = sx + w - zoomButtons.width - 5;
-		zoomButtons.y = sy + 5;
-
-		var modeX:int = sx + w - 5 - Math.max(modeLabel.width, modeButton.width) / 2;
+		var modeX:int = w - 5 - Math.max(modeLabel.width, modeButton.width) / 2;
 		modeLabel.x = modeX - modeLabel.width / 2;
-		modeLabel.y = sy + h - 47;
+		modeLabel.y = h - 47;
 		modeButton.x = modeX - modeButton.width / 2;
 		modeButton.y = modeLabel.y + 22;
 
@@ -188,8 +177,8 @@ public class DrawPropertyUI extends Sprite {
 		strokeWidthSlider.visible = !enabled;
 		if (enabled) {
 			updateFillUI();
-			for (var i:uint = 0; i < fillUI.numChildren; ++i)
-				if (fillUI.getChildAt(i) is IconButton) {
+			for(var i:uint=0; i<fillUI.numChildren; ++i)
+				if(fillUI.getChildAt(i) is IconButton) {
 					var ib:IconButton = (fillUI.getChildAt(i) as IconButton);
 					ib.setOn(ib.name == settings.fillType);
 				}
@@ -202,18 +191,6 @@ public class DrawPropertyUI extends Sprite {
 		updateShapeUI();
 		shapeBtnFill.setOn(currentValues.filledShape);
 		shapeBtnHollow.setOn(!currentValues.filledShape);
-	}
-
-	public function toggleSegmentationUI(enabled:Boolean, tool:BitmapBackgroundTool):void {
-		if (tool && enabled) {
-			tool.removeEventListener(BitmapBackgroundTool.UPDATE_REQUIRED, updateSegmentationUI);
-			tool.addEventListener(BitmapBackgroundTool.UPDATE_REQUIRED, updateSegmentationUI, false, 0, true);
-		}
-		if (tool && !enabled) {
-			tool.removeEventListener(BitmapBackgroundTool.UPDATE_REQUIRED, updateSegmentationUI);
-		}
-		segmentationUI.visible = enabled;
-		colorPicker.visible = !enabled;
 	}
 
 	public function showSmoothnessUI(flag:Boolean, forDrawing:Boolean = true):void {
@@ -230,15 +207,14 @@ public class DrawPropertyUI extends Sprite {
 		strokeWidthDisplay.visible = isStroke;
 		strokeWidthSlider.visible = isStroke || isEraser;
 		disableEvents = true;
-		SimpleTooltips.add(
-				strokeWidthSlider.parent, {text: (isEraser ? 'Eraser width' : 'Line width'), direction: 'top'});
+		SimpleTooltips.add(strokeWidthSlider.parent, {text: (isEraser ? 'Eraser width' : 'Line width'), direction: 'top'});
 		strokeWidthSlider.value = isEraser ? currentValues.eraserWidth : currentValues.strokeWidth;
 		disableEvents = false;
 		updateStrokeWidthDisplay();
 	}
 
 	public function sendChangeEvent():void {
-		if (!disableEvents) dispatchEvent(new Event(ONCHANGE));
+		if(!disableEvents) dispatchEvent(new Event(ONCHANGE));
 		if (fillUI.visible) updateFillUI();
 		if (shapeUI.visible) updateShapeUI();
 	}
@@ -278,13 +254,17 @@ public class DrawPropertyUI extends Sprite {
 	private function updateFillUI():void {
 		// Update the icons of the fill UI with new colors.
 		fillBtnSolid.setImage(
-				makeFillIcon('solid', true), makeFillIcon('solid', false));
+			makeFillIcon('solid', true),
+			makeFillIcon('solid', false));
 		fillBtnHorizontal.setImage(
-				makeFillIcon('linearHorizontal', true), makeFillIcon('linearHorizontal', false));
+			makeFillIcon('linearHorizontal', true),
+			makeFillIcon('linearHorizontal', false));
 		fillBtnVertical.setImage(
-				makeFillIcon('linearVertical', true), makeFillIcon('linearVertical', false));
+			makeFillIcon('linearVertical', true),
+			makeFillIcon('linearVertical', false));
 		fillBtnRadial.setImage(
-				makeFillIcon('radial', true), makeFillIcon('radial', false));
+			makeFillIcon('radial', true),
+			makeFillIcon('radial', false));
 	}
 
 	private function makeFillIcon(fill:String, isOn:Boolean):Sprite {
@@ -302,23 +282,23 @@ public class DrawPropertyUI extends Sprite {
 		var g:Graphics = icon.graphics;
 
 		switch (fill) {
-			case 'linearHorizontal':
-				m.createGradientBox(iconW, iconH, 0, 0, 0);
-				g.beginGradientFill(GradientType.LINEAR, colors, [1, 1], [0, 255], m);
-				break;
-			case 'linearVertical':
-				m.createGradientBox(iconW, iconH, (Math.PI / 2), 0, 0);
-				g.beginGradientFill(GradientType.LINEAR, colors, [1, 1], [0, 255], m);
-				break;
-			case 'radial':
-				m.createGradientBox(iconW, iconH);
-				g.beginGradientFill(GradientType.RADIAL, colors, [1, 1], [0, 255], m);
-				break;
-			case 'hollow':
-				g.lineStyle(4, colors[0]);
-			case 'solid':
-			default:
-				g.beginFill(colors[0]);
+		case 'linearHorizontal':
+			m.createGradientBox(iconW, iconH, 0, 0, 0);
+			g.beginGradientFill(GradientType.LINEAR, colors, [1, 1], [0, 255], m);
+			break;
+		case 'linearVertical':
+			m.createGradientBox(iconW, iconH, (Math.PI / 2), 0, 0);
+			g.beginGradientFill(GradientType.LINEAR, colors, [1, 1], [0, 255], m);
+			break;
+		case 'radial':
+			m.createGradientBox(iconW, iconH);
+			g.beginGradientFill(GradientType.RADIAL, colors, [1, 1], [0, 255], m);
+			break;
+		case 'hollow':
+			g.lineStyle(4, colors[0]);
+		case 'solid':
+		default:
+			g.beginFill(colors[0]);
 		}
 		g.drawRect(0, 0, iconW, iconH);
 		return ImageEdit.buttonFrame(icon, isOn, buttonSize);
@@ -366,8 +346,7 @@ public class DrawPropertyUI extends Sprite {
 		smoothStrokeBtn.setLabel(Translator.map('Smooth'));
 		modeLabel.text = Translator.map(editor is SVGEdit ? 'Vector Mode' : 'Bitmap Mode');
 		modeButton.setLabel(Translator.map(editor is SVGEdit ? 'Convert to bitmap' : 'Convert to vector'));
-		SimpleTooltips.add(
-				strokeWidthSlider.parent, {text: eraserStrokeMode ? 'Eraser width' : 'Line width', direction: 'top'});
+		SimpleTooltips.add(strokeWidthSlider.parent, {text: eraserStrokeMode ? 'Eraser width' : 'Line width', direction: 'top'});
 		fixLayout(w, h);
 	}
 
@@ -395,9 +374,11 @@ public class DrawPropertyUI extends Sprite {
 	private function updateShapeUI(ignore:* = null):void {
 		// Update the icons of the fill UI with new colors.
 		shapeBtnFill.setImage(
-				makeShapeIcon('solid', true), makeShapeIcon('solid', false));
+			makeShapeIcon('solid', true),
+			makeShapeIcon('solid', false));
 		shapeBtnHollow.setImage(
-				makeShapeIcon('hollow', true), makeShapeIcon('hollow', false));
+			makeShapeIcon('hollow', true),
+			makeShapeIcon('hollow', false));
 	}
 
 	private function makeShapeIcon(fill:String, isOn:Boolean):Sprite {
@@ -414,7 +395,7 @@ public class DrawPropertyUI extends Sprite {
 		if ('hollow' == fill) g.lineStyle(lineW, currentValues.color);
 		else g.beginFill(currentValues.color);
 
-		var inset:Number = ('hollow' == fill) ? lineW / 2 : 0;
+		var inset:Number = ('hollow' == fill) ? lineW / 2 : 0
 
 		if (isEllipse) g.drawEllipse(inset, inset, iconW, iconH);
 		else g.drawRect(inset, inset, iconW, iconH);
@@ -426,7 +407,7 @@ public class DrawPropertyUI extends Sprite {
 		currentValues.filledShape = (ib.name == 'filled');
 
 		// If they want to draw a hollow shape and the stroke width was zero, set it to 2.
-		if (!currentValues.filledShape && currentValues.strokeWidth == 0) {
+		if(!currentValues.filledShape && currentValues.strokeWidth == 0) {
 			currentValues.strokeWidth = 2;
 		}
 	}
@@ -457,37 +438,6 @@ public class DrawPropertyUI extends Sprite {
 		strokeSmoothnessSlider.visible = false;
 		smoothnessUI.addChild(strokeSmoothnessSlider);
 		addChild(smoothnessUI);
-	}
-
-	private function makeSegmentationUI():void {
-		var segmentationLabel:TextField;
-		var segmentationHelpLabel:TextField;
-		var segmentationHelpBtn:IconButton;
-
-		segmentationUI = new Sprite();
-		segmentationUI.visible = false;
-
-		segmentationLabel = Resources.makeLabel("Magic Wand - Remove background from a photo", CSS.titleFormat, 10, 10);
-		segmentationUI.addChild(segmentationLabel);
-
-		function showTip(btn:IconButton):void {
-			editor.app.showTip("magicwand");
-		}
-
-		segmentationHelpLabel = Resources.makeLabel("Find out more", CSS.projectInfoFormat, 5, 5);
-		segmentationHelpLabel.x = segmentationLabel.x;
-		segmentationHelpLabel.y = this.height/2 - segmentationHelpLabel.height/2 ;
-		segmentationUI.addChild(segmentationHelpLabel);
-
-		segmentationHelpBtn = new IconButton(showTip, "moreInfo");
-		segmentationHelpBtn.isMomentary = true;
-		segmentationHelpBtn.x = segmentationHelpLabel.x + segmentationHelpLabel.width + 2;
-		segmentationHelpBtn.y =
-				segmentationHelpLabel.y + segmentationHelpLabel.height / 2 - segmentationHelpBtn.height / 2;
-
-		segmentationUI.addChild(segmentationHelpBtn);
-
-		addChild(segmentationUI);
 	}
 
 	private function makeStrokeUI():void {
@@ -532,13 +482,6 @@ public class DrawPropertyUI extends Sprite {
 		ttBg.graphics.endFill();
 	}
 
-
-	private function updateSegmentationUI(e:Event = null):void {
-		if (editor && editor.imagesPart) {
-			editor.imagesPart.refreshUndoButtons();
-		}
-	}
-
 	private function updateStrokeWidthDisplay(ignore:* = null):void {
 		var w:Number = eraserStrokeMode ? currentValues.eraserWidth : currentValues.strokeWidth;
 		if (editor is BitmapEdit) {
@@ -558,8 +501,7 @@ public class DrawPropertyUI extends Sprite {
 			g.beginBitmapFill(Resources.createBmp('canvasGrid').bitmapData, m);
 			g.drawCircle(40, 0, w);
 			g.endFill();
-		}
-		else {
+		} else {
 			g = strokeWidthDisplay.graphics;
 			g.clear();
 			g.lineStyle(w, currentValues.color, currentValues.alpha);
@@ -582,8 +524,10 @@ public class DrawPropertyUI extends Sprite {
 		var x:int = 0;
 		for each (var toolName:String in zoomToolNames) {
 			var ib:IconButton = new IconButton(
-					editor.handleImmediateTool, Resources.createBmp(toolName + 'On'), Resources.createBmp(
-							toolName + 'Off'), false);
+				editor.handleImmediateTool,
+				Resources.createBmp(toolName + 'On'),
+				Resources.createBmp(toolName + 'Off'),
+				false);
 			ib.isRadioButton = true;
 			ib.name = name;
 			ib.x = x;
@@ -598,11 +542,13 @@ public class DrawPropertyUI extends Sprite {
 		function convertToVector():void { editor.imagesPart.convertToVector() }
 
 		modeLabel = Resources.makeLabel(
-				Translator.map((editor is SVGEdit) ? 'Vector Mode' : 'Bitmap Mode'), CSS.titleFormat, 0, 71);
+			Translator.map((editor is SVGEdit) ? 'Vector Mode' : 'Bitmap Mode'),
+			CSS.titleFormat, 0, 71);
 		addChild(modeLabel);
 
-		modeButton = (editor is SVGEdit) ? new Button(Translator.map('Convert to bitmap'), convertToBitmap, true) :
-				new Button(Translator.map('Convert to vector'), convertToVector, true);
+		modeButton = (editor is SVGEdit) ?
+			new Button(Translator.map('Convert to bitmap'), convertToBitmap, true) :
+			new Button(Translator.map('Convert to vector'), convertToVector, true);
 		addChild(modeButton);
 	}
 
@@ -612,5 +558,4 @@ public class DrawPropertyUI extends Sprite {
 		addChild(zoomReadout = Resources.makeLabel('', CSS.normalTextFormat, 0, 0));
 	}
 
-}
-}
+}}

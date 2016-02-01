@@ -14,19 +14,11 @@
         <sequential>
             <local name="git.present"/>
             <local name="git.revision"/>
-            <local name="git.statusText"/>
-            <local name="git.dirtyString"/>
             <available file="@{repository}/.git" property="git.present"/>
-            <exec executable="git" dir="@{repository}" outputproperty="git.statusText" failifexecutionfails="false">
-                <arg line="status --porcelain --ignore-submodules=dirty"/>
-            </exec>
             <exec executable="git" dir="@{repository}" outputproperty="git.revision" failifexecutionfails="false">
-                <arg line="rev-parse --short HEAD"/>
+                <arg line="describe --dirty --long --always"/>
             </exec>
-            <condition property="git.dirtyString" value="-dirty" else="">
-                <length string="${git.statusText}" trim="yes" when="greater" length="0"/>
-            </condition>
-            <condition property="@{outputproperty}" value="${git.revision}${git.dirtyString}" else="unknown">
+            <condition property="@{outputproperty}" value="${git.revision}" else="unknown">
                 <and>
                     <isset property="git.revision"/>
                     <length string="${git.revision}" trim="yes" when="greater" length="0"/>

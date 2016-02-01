@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<application xmlns="http://ns.adobe.com/air/application/4.0"> 
+    <id>Scratch</id> 
+    <versionNumber>1.0</versionNumber> 
+    <filename>Scratch</filename> 
+    <name>Scratch</name> 
+    <copyright></copyright> 
+    <initialWindow> 
+        <title>Scratch</title> 
+        <content> 
+            bin/Scratch.swf 
+        </content> 
+        <systemChrome>none</systemChrome> 
+        <transparent>true</transparent> 
+        <visible>true</visible> 
+        <minSize>320 240</minSize> 
+        <autoOrients>true</autoOrients>
+        <fullScreen>true</fullScreen>
+    </initialWindow>  
+    <installFolder>Scratch</installFolder> 
+    <programMenuFolder>Scratch</programMenuFolder> 
+    <customUpdateUI>true</customUpdateUI> 
+    <allowBrowserInvocation>false</allowBrowserInvocation>
+
+    <android> 
+        <manifestAdditions> 
+            <![CDATA[ 
+                <manifest> 
+                    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+                    <uses-permission android:name="android.permission.CAMERA" />
+
+                    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+                    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+                </manifest> 
+            ]]> 
+        </manifestAdditions> 
+    </android>
+</application>
