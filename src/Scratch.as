@@ -47,6 +47,11 @@ import flash.system.*;
 import flash.text.*;
 import flash.utils.*;
 
+//Imports for Pinch to Zoom
+import flash.ui.MultitouchInputMode;
+import flash.ui.Multitouch;
+import flash.geom.Matrix;
+
 import interpreter.*;
 
 import logging.Log;
@@ -72,7 +77,6 @@ import uiwidgets.*;
 import util.*;
 
 import watchers.ListWatcher;
-
 
 public class Scratch extends Sprite {
 	// Version
@@ -146,6 +150,7 @@ public class Scratch extends Sprite {
 
 		// This one must finish before most other queries can start, so do it separately
 		determineJSAccess();
+
 	}
 
 	protected function determineJSAccess():void {
@@ -166,6 +171,10 @@ public class Scratch extends Sprite {
 	}
 
 	protected function initialize():void {
+
+		//For pinch to zoom
+		Multitouch.inputMode = MultitouchInputMode.GESTURE;
+
 		isOffline = !URLUtil.isHttpURL(loaderInfo.url);
 		hostProtocol = URLUtil.getProtocol(loaderInfo.url);
 
@@ -212,6 +221,10 @@ public class Scratch extends Sprite {
 		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown); // to handle escape key
 		stage.addEventListener(Event.ENTER_FRAME, step);
 		stage.addEventListener(Event.RESIZE, onResize);
+
+		//Pinch to zoom events
+		app.addEventListener(TransformGestureEvent.GESTURE_PAN, fl_PanHandler);
+		app.addEventListener(TransformGestureEvent.GESTURE_ZOOM, fl_ZoomHandler);
 
 		setEditMode(startInEditMode());
 
@@ -1637,5 +1650,25 @@ public class Scratch extends Sprite {
 		args.splice(1, 0, returnValueCallback);
 		externalCall.apply(this, args);
 	}
+
+	//Functions for pinch to zoom
+	private function fl_PanHandler(event:TransformGestureEvent):void {
+		event.currentTarget.x += event.offsetX;
+		event.currentTarget.y += event.offsetY;
+	}
+
+	private function fl_ZoomHandler(event:TransformGestureEvent):void {
+		if(app.scaleX*event.scaleX < 1){}else{
+			var transformMatrix:Matrix = app.transform.matrix;
+			transformMatrix.tx -= event.localX;
+			transformMatrix.ty -= event.localY;
+			transformMatrix.scale((event.scaleX + event.scaleY) / 2, (event.scaleX + event.scaleY) / 2 );
+			transformMatrix.tx += event.localX;
+			transformMatrix.ty += event.localY;
+
+			app.transform.matrix = transformMatrix;
+		}
+	}
+
 }
 }
