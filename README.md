@@ -13,7 +13,6 @@ After downloading ``playerglobal11_4.swc`` and ``playerglobal10_2.swc``, move th
 Create a ``local.properties`` file to set the required options. Your ``local.properties`` file may look something like this: 
 ```
 FLEX_HOME=/Users/elfin8er/Downloads/flexsdk
-JAVA_HOME=/Program Files/Java/jdk1.7.0_79
 SCRATCH_HOME=/Users/elfin8er/Documents/Programming/ScratchMobile/scratch-flash
 android.certificate.password=PASSWORD
 ios.certificate.password=1234
