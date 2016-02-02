@@ -43,7 +43,7 @@
 
 	<!-- Build for Flash Player 10.2 -->
 	<target name="compile-10.2" depends="info">
-		<echo>"Hello World"</echo>
+		<echo>"${SCRATCH_HOME}"</echo>
 		<mxmlc file="${SRC_DIR}/Scratch.as" output="${DEPLOY_DIR}/ScratchFor10.2.swf"
 		                target-player="10.2" swf-version="11" debug="false">
 			<source-path path-element="${SRC_DIR}" />
