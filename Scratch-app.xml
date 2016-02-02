@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?> 
-<application xmlns="http://ns.adobe.com/air/application/3.7"> 
+<application xmlns="http://ns.adobe.com/air/application/3.0"> 
     <id>Scratch</id> 
     <versionNumber>1.0</versionNumber> 
     <filename>Scratch</filename> 
