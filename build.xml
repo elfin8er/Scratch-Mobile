@@ -87,7 +87,7 @@
 		<exec executable="${FLEX_HOME}/bin/adt${bin.ext}" failonerror="true"> 
 			<arg value="-package"/> 
 			<arg value="-target"/> 
-			<arg value="apk-captive-runtime"/> 
+			<arg value="apk"/> 
 			<arg value="-storetype"/> 
 			<arg value="pkcs12"/> 
 			<arg value="-keystore"/> 
